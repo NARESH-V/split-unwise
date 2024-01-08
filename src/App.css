@@ -36,3 +36,24 @@
     transform: rotate(360deg);
   }
 }
+
+.displayContainer {
+  margin-top: 65px;
+  margin-left: 240Px;
+}
+
+@media (max-width: 600px) {
+  .displayContainer {
+    margin-left: 0px;
+  }
+}
+
+.groupCard {
+  width: 330px !important;
+}
+
+@media (max-width: 800px) {
+  .groupCard {
+    width: 450px !important;
+  }
+}
