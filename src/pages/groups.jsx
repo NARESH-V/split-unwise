@@ -14,7 +14,7 @@ const Groups = () => {
   ];
   return(
     <>
-      <Container style={styles.groupList}>
+      <Container style={styles.groupList} className='groupList'>
         {groupData.map(group => <GroupListItem data={group} />)}     
       </Container>
     </>

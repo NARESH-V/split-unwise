@@ -1,19 +1,25 @@
 import React from 'react';
 import Avatar from '@mui/material/Avatar';
-import { deepPurple } from '@mui/material/colors';
 import { Container, ListItem, ListItemAvatar } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 const GroupListItem = (props) => {
     const data = props.data;
+
     const shortName = (name) => {
-     const [first, last] =  name.toUpperCase().split(' ');
-     return first[0] + last[0];
-    }
+      const [first, last] =  name.toUpperCase().split(' ');
+      return first[0] + last[0];
+    };
+
+    const generateColor = () => {
+      return `#${Math.random().toString(16).substr(-6)}`;
+    };
+
   return(
-    <ListItem style={{width: 'auto'}}>
+    <ListItem style={{width: 'auto'}} component={Link} to={'groupExpense'}>
       <Container style={styles.groupCard} className='groupCard' >
         <ListItemAvatar  style={styles.imageContainer}>
-          <Avatar sx={{ bgcolor: deepPurple[500], width: '5rem', height: '5rem' }}>{shortName(data.groupName)}</Avatar>
+          <Avatar sx={{ bgcolor: generateColor, width: '5rem', height: '5rem' }}>{shortName(data.groupName)}</Avatar>
         </ListItemAvatar>
         <div style={styles.detailsContainer}>
           <h2>{data.groupName}</h2>
