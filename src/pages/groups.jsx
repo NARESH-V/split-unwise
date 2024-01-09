@@ -15,7 +15,7 @@ const Groups = () => {
   return(
     <>
       <Container style={styles.groupList} className='groupList'>
-        {groupData.map(group => <GroupListItem data={group} />)}     
+        {groupData.map((group, index) => <GroupListItem data={group} index={index} />)}     
       </Container>
     </>
   );

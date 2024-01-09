@@ -39,13 +39,7 @@
 
 .displayContainer {
   margin-top: 65px;
-  margin-left: 240Px;
-}
-
-@media (max-width: 600px) {
-  .displayContainer {
-    margin-left: 0px;
-  }
+  margin-bottom: 60Px;
 }
 
 .groupCard {
@@ -62,8 +56,12 @@
   justify-content: space-evenly;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 500px) {
   .groupList {
     justify-content: unset;
   }
+}
+
+.active {
+  color: #1172ce;
 }

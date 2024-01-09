@@ -6,6 +6,8 @@ import GroupExpense from './pages/groupExpense';
 import Groups from './pages/groups';
 import Activity from './pages/activity';
 import NavBar from './components/navBar';
+import MenuBar from './components/menuBar';
+import CreateGroup from './pages/createGroup';
 
 
 
@@ -13,14 +15,16 @@ function App() {
   return (
     <div className="App">
       <Router>
-        <NavBar/>
+        <MenuBar/>
         <div className="displayContainer">
           <Routes >
             <Route exact path="/" element={<Groups/>} />
             <Route path="/groupExpense" element={<GroupExpense/>} />
             <Route path="/activity" element={<Activity/>} />
+            <Route path="/createGroup" element={<CreateGroup/>} />
           </Routes>
         </div>
+        <NavBar/>
       </Router>
     </div>
   );

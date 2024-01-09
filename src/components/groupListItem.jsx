@@ -16,7 +16,7 @@ const GroupListItem = (props) => {
     };
 
   return(
-    <ListItem style={{width: 'auto'}} component={Link} to={'groupExpense'}>
+    <ListItem style={{width: 'auto'}} component={Link} to={'groupExpense'} key={props.index}>
       <Container style={styles.groupCard} className='groupCard' >
         <ListItemAvatar  style={styles.imageContainer}>
           <Avatar sx={{ bgcolor: generateColor, width: '5rem', height: '5rem' }}>{shortName(data.groupName)}</Avatar>
