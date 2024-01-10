@@ -16,13 +16,13 @@ const GroupListItem = (props) => {
     };
 
   return(
-    <ListItem style={{width: 'auto'}} component={Link} to={'groupExpense'} key={props.index}>
+    <ListItem style={{width: 'auto'}} component={Link} to={'groupExpense'}>
       <Container style={styles.groupCard} className='groupCard' >
         <ListItemAvatar  style={styles.imageContainer}>
           <Avatar sx={{ bgcolor: generateColor, width: '5rem', height: '5rem' }}>{shortName(data.groupName)}</Avatar>
         </ListItemAvatar>
         <div style={styles.detailsContainer}>
-          <h2>{data.groupName}</h2>
+          <h2 style={styles.groupName}>{data.groupName}</h2>
           <p>{data.description}</p>
         </div>
       </Container>
@@ -49,6 +49,13 @@ const styles = {
         borderRadius: '15px',
         marginBottom: '10px'
     },
+
+    groupName: {
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      maxWidth: '185px'
+    }
 }
 
 export default GroupListItem;

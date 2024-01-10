@@ -7,9 +7,6 @@ import Groups from './pages/groups';
 import Activity from './pages/activity';
 import NavBar from './components/navBar';
 import MenuBar from './components/menuBar';
-import CreateGroup from './pages/createGroup';
-
-
 
 function App() {
   return (
@@ -21,7 +18,6 @@ function App() {
             <Route exact path="/" element={<Groups/>} />
             <Route path="/groupExpense" element={<GroupExpense/>} />
             <Route path="/activity" element={<Activity/>} />
-            <Route path="/createGroup" element={<CreateGroup/>} />
           </Routes>
         </div>
         <NavBar/>
