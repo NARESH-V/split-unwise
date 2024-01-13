@@ -8,7 +8,7 @@ import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import Paper from '@mui/material/Paper';
 import Fab from '@mui/material/Fab';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
-import AddExpense from '../dialogs/addExpense';
+import AddExpense from '../dialogs/addExpense.tsx';
 
 const navHeight = 60;
 
@@ -52,7 +52,7 @@ const NavBar = () => {
             ))}
         </BottomNavigation>
       </Paper>
-      <Fab variant="extended" color="primary" style={styles.fabStyle} onClick={handleClickOpen}>
+      <Fab variant="extended" color="primary" style={fabStyle} onClick={handleClickOpen}>
         <ReceiptLongIcon sx={{ mr: 1 }} />
           Add Expense
       </Fab>
@@ -61,12 +61,10 @@ const NavBar = () => {
   );
 };
 
-const styles = {
-  fabStyle: {
-    position: 'fixed',
-    bottom: '75px',
-    right: '25px',
-  }
+const fabStyle: React.CSSProperties = {
+  position: 'fixed',
+  bottom: '75px',
+  right: '25px',
 }
 
 export default NavBar;

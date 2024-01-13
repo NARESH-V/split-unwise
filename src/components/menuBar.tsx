@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
-import CreateGroup from '../dialogs/createGroup';
+import CreateGroup from '../dialogs/createGroup.tsx';
 
 const MenuBar = () => {
   const [open, setOpen] = React.useState(false);

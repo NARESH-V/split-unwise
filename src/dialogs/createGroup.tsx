@@ -7,33 +7,26 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
-import Slide from '@mui/material/Slide';
+import Slide, { SlideProps } from '@mui/material/Slide';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
-import CardTravelIcon from '@mui/icons-material/CardTravel';
-import GiteIcon from '@mui/icons-material/Gite';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import Chip from '@mui/material/Chip';
+import { GROUP_TYPES } from '../common/constants.tsx';
 
-const Transition = React.forwardRef(function Transition(props, ref) {
+const Transition = React.forwardRef(function Transition(props: SlideProps, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 export default function CreateGroup({open, handleClose}) {
-  const [groupName, setGroupName] = React.useState(null);
-  const [type, setType] = React.useState(null);
+  const [groupName, setGroupName] = React.useState<string | null>(null);
+  const [type, setType] = React.useState<string | null>(null);
 
-  const chipData = [
-    {label: 'Trip', icon: <CardTravelIcon/>},
-    {label: 'Home', icon: <GiteIcon/>},
-    {label: 'Couple', icon: <FavoriteBorderIcon/>},
+  const chipData = GROUP_TYPES;
 
-  ]
-
-  const onValueChange = (field, value) => {
+  const onValueChange = (field: string, value: string) => {
     switch(field.toLowerCase()) {
       case 'name': setGroupName(value); break;
       case 'type': setType(value); break;
@@ -42,7 +35,7 @@ export default function CreateGroup({open, handleClose}) {
   };
 
   const createGroup = () => {
-    if(!groupName || !groupName.length > 0) {
+    if(!groupName || groupName.length < 0) {
       alert("please enter group name."); 
       return;
     } 
@@ -110,7 +103,7 @@ export default function CreateGroup({open, handleClose}) {
                   label={data.label}
                   style={styles.chip}
                   onClick={() => onValueChange("type", data.label)}
-                  color={data.label == type  ? 'primary' : undefined}
+                  color={data.label === type  ? 'primary' : undefined}
                 />
               </ListItem>
             );

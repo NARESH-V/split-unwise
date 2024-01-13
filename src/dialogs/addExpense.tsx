@@ -1,58 +1,36 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import ListItem from '@mui/material/ListItem';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
-import Slide from '@mui/material/Slide';
+import Slide, { SlideProps } from '@mui/material/Slide';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
-import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
-import CardTravelIcon from '@mui/icons-material/CardTravel';
-import GiteIcon from '@mui/icons-material/Gite';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import Chip from '@mui/material/Chip';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import { Container } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
-import { styled, lighten, darken } from '@mui/system';
+import { styled } from '@mui/system';
+import { GROUP_FRIENDS_OPTIONS } from '../common/constants.tsx';
 
-const Transition = React.forwardRef(function Transition(props, ref) {
+const Transition = React.forwardRef(function Transition(props: SlideProps, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 export default function AddExpense(props) {
 
-  const [amount, setAmount] = React.useState(null);
-  const [description, setDescription] = React.useState(null);
-  const [splitWith, setSplitWith] = React.useState(null);
+  const [amount, setAmount] = React.useState<number | null>(null);
+  const [description, setDescription] = React.useState<string | null>(null);
+  const [splitWith, setSplitWith] = React.useState<string | null>(null);
 
-  const friends = [{name: 'Naresh', email: 'xyz@gmail.com', userId: 1},
-    {name: 'karthi', email: 'kar@gmail.com', userId: 2},
-    {name: 'balaji', email: 'bal@gmail.com', userId: 3},
-    {name: 'Vasanth', email: 'vash@gmail.com', userId: 4}
-  ];
+  const options = GROUP_FRIENDS_OPTIONS;
 
-  const groups = [
-    {groupId: 123, name: 'group1'},
-    {groupId: 234, name: 'group2'}
-  ]
-
-  const options = [...friends, ...groups].map(option => {
-    return {
-      category: !!option.groupId ? 'Groups' : 'Friends',
-      label: option.name,
-      value: option
-    }
-  });
-
-  const onValueChange = (field, value) => {
+  const onValueChange = (field: string, value: string) => {
     switch(field.toLowerCase()) {
       case 'splitWith': setSplitWith(value); break;
       case 'amount': setAmount(parseFloat(value)); break;
@@ -62,8 +40,8 @@ export default function AddExpense(props) {
   };
 
   const addExpense = () => {
-    const errorMsgs =[];
-    if(!description || !description.length > 0) {
+    const errorMsgs: string[] =[];
+    if(!description || description.length < 0) {
       errorMsgs.push("please enter a valid description."); 
     } 
     if(!amount || amount < 0 ) {

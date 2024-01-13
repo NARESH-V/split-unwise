@@ -19,10 +19,10 @@ const GroupListItem = (props) => {
     <ListItem style={{width: 'auto'}} component={Link} to={'groupExpense'}>
       <Container style={styles.groupCard} className='groupCard' >
         <ListItemAvatar  style={styles.imageContainer}>
-          <Avatar sx={{ bgcolor: generateColor, width: '5rem', height: '5rem' }}>{shortName(data.groupName)}</Avatar>
+          <Avatar sx={{ bgcolor: generateColor, width: '5rem', height: '5rem' }}>{shortName(data.name)}</Avatar>
         </ListItemAvatar>
         <div style={styles.detailsContainer}>
-          <h2 style={styles.groupName}>{data.groupName}</h2>
+          <h2 style={styles.groupName}>{data.name}</h2>
           <p>{data.description}</p>
         </div>
       </Container>
