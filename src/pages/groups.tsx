@@ -1,16 +1,23 @@
 import { Container } from '@mui/material';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import GroupListItem from '../components/groupListItem.tsx';
 import { GROUPS } from '../common/constants.tsx';
+import { GroupService } from '../services/groupService.ts';
+import { Group } from '../common/models.ts';
 
 
 const Groups = () => {
-  const groupData = GROUPS;
+  const groupService = new GroupService();
+  const [groupData, setGroupData] = useState<Group[] | null>([]);
+
+  useEffect( () => {
+      setGroupData(groupService.getGroupList());
+  },[])
 
   return(
     <>
       <Container style={groupListStyle} className='groupList'>
-        {groupData.map((group, index) => <GroupListItem data={group} key={index} />)}     
+        {groupData?.map((group, index) => <GroupListItem data={group} key={index} />)}     
       </Container>   
     </>
   );

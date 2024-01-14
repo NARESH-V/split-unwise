@@ -16,7 +16,9 @@ import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import { Container } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import { styled } from '@mui/system';
-import { GROUP_FRIENDS_OPTIONS } from '../common/constants.tsx';
+import { GROUP_FRIENDS_OPTIONS, SPLIT_METHOD } from '../common/constants.tsx';
+import { Group } from '../common/models.ts';
+import AdjustSplit from './adjustSplit.tsx';
 
 const Transition = React.forwardRef(function Transition(props: SlideProps, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -26,19 +28,32 @@ export default function AddExpense(props) {
 
   const [amount, setAmount] = React.useState<number | null>(null);
   const [description, setDescription] = React.useState<string | null>(null);
-  const [splitWith, setSplitWith] = React.useState<string | null>(null);
+  const [splitWith, setSplitWith] = React.useState<Group | null>(null);
+  const [splitMethod, setSplitMethod] = React.useState<string>(SPLIT_METHOD.EQUALLY);
+  const [open, setOpen] = React.useState(false);
 
   const options = GROUP_FRIENDS_OPTIONS;
 
-  const onValueChange = (field: string, value: string) => {
+  const onValueChange = (field: string, value: any) => {
     switch(field.toLowerCase()) {
-      case 'splitWith': setSplitWith(value); break;
+      case 'splitwith': setSplitWith(value); break;
       case 'amount': setAmount(parseFloat(value)); break;
       case 'description': setDescription(value); break;
       default: break;
     }
   };
 
+  const handleSplitMethodChange = (splitMethod: string) => {
+    setSplitMethod(splitMethod);
+  };
+  
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  }
   const addExpense = () => {
     const errorMsgs: string[] =[];
     if(!description || description.length < 0) {
@@ -52,12 +67,13 @@ export default function AddExpense(props) {
       return;
     }
 
-    alert(`Expense : ${description}, amount :${amount}`);
+    alert(`Expense : ${description}, amount :${amount}, SplitWith: ${splitWith?.name}`);
 
     props.handleClose();
     setAmount(null);
     setDescription(null);
     setSplitWith(null);
+    setSplitMethod(SPLIT_METHOD.EQUALLY);
   }
 
   return (
@@ -95,13 +111,14 @@ export default function AddExpense(props) {
               groupBy={(option) => option.category}
               getOptionLabel={(option) => option.label}
               sx={{ width: 300 }}
+              onChange={(e, option) => onValueChange("splitWith", option?.value)} 
               renderInput={(params) => 
                 <TextField 
                   {...params} 
                   placeholder='Enter names, emails, or Phone' 
                   style={styles.splitWith} 
                   variant='standard'
-                  onChange={(e) => onValueChange("splitWith", e.target.value)} />
+                  className='autocomplete'/>
               }
               renderGroup={(params) => (
                 <li key={params.key}>
@@ -150,10 +167,11 @@ export default function AddExpense(props) {
             <Typography>Paid by </Typography>
             <Typography>you </Typography>
             <Typography>and split</Typography>
-            <Typography>equally</Typography>
+            <Button onClick={handleClickOpen}>{splitMethod}</Button>
           </Stack>
         </Box>
       </Dialog>
+      <AdjustSplit open={open} handleClose={handleClose}/>
     </React.Fragment>
   );
 }
@@ -202,7 +220,7 @@ const styles = {
   },
 
   partyInfo: {
-    alignItems: 'baseline',
+    alignItems: 'center',
     justifyContent: 'center',
     padding: '20px'
   }

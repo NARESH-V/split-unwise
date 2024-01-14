@@ -7,8 +7,7 @@ const GroupListItem = (props) => {
     const data = props.data;
 
     const shortName = (name) => {
-      const [first, last] =  name.toUpperCase().split(' ');
-      return first[0] + last[0];
+      return name.toUpperCase()[0];
     };
 
     const generateColor = () => {

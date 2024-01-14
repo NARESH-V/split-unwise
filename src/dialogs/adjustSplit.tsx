@@ -14,22 +14,30 @@ import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import Chip from '@mui/material/Chip';
-import { GROUP_TYPES } from '../common/constants.tsx';
-import { GroupService } from '../services/groupService.ts';
-import { response } from 'express';
-import { CreateGroupRequest } from '../common/models.ts';
+import { GROUP_TYPES, SPLIT_METHOD } from '../common/constants.tsx';
+import Tab from '@mui/material/Tab';
+import Tabs from '@mui/material/Tabs';
+import SwipeableViews from 'react-swipeable-views';
+import EqualSplit from './tabs/equalSplit.tsx';
+import UnEqualSplit from './tabs/unEqualSplit.tsx';
+import PercentageSplit from './tabs/percentageSplit.tsx';
 
 const Transition = React.forwardRef(function Transition(props: SlideProps, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function CreateGroup({open, handleClose}) {
-  const groupService = new GroupService();
-
+export default function AdjustSplit({open, handleClose}) {
   const [groupName, setGroupName] = React.useState<string | null>(null);
-  const [type, setType] = React.useState<string>('default');
+  const [type, setType] = React.useState<string | null>(null);
+  const [value, setValue] = React.useState(0);
 
-  const chipData = GROUP_TYPES;
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
+
+  const handleChangeIndex = (index: number) => {
+    setValue(index);
+  };
 
   const onValueChange = (field: string, value: string) => {
     switch(field.toLowerCase()) {
@@ -44,24 +52,11 @@ export default function CreateGroup({open, handleClose}) {
       alert("please enter group name."); 
       return;
     } 
-
-    const payload: CreateGroupRequest = {
-      group_name: groupName,
-      user_id_list: [1,2,3],
-      group_type: type,
-      user_id: 2,
-      description: groupName
-    }
-    groupService.createGroup(payload).then(response => {
-      if(response?.status !== 202) {
-        console.log(response);
-        return;
-      }
-    })
+    alert(`group name : ${groupName}, type :${type}`);
 
     handleClose();
     setGroupName(null);
-    setType('default');
+    setType(null);
   }
 
   return (
@@ -83,7 +78,7 @@ export default function CreateGroup({open, handleClose}) {
               <CloseIcon />
             </IconButton>
             <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-              Create Group
+              Adjust Split
             </Typography>
             <Button autoFocus color="inherit" onClick={createGroup}>
               done
@@ -99,44 +94,76 @@ export default function CreateGroup({open, handleClose}) {
           autoComplete="off"
           style={styles.form}
         >
-          <Stack direction="row" spacing={2} style={styles.input}>
-            <Avatar variant='rounded' style={styles.groupImage}>
-              <AddAPhotoIcon />
-            </Avatar>
-            <TextField
-              id="group-name"
-              label="Group Name"
-              variant="standard"
-              style={styles.groupName}
-              onChange={(e) => onValueChange("name", e.target.value)}
-            />
-          </Stack>
-          <Typography>Type</Typography>
-          <Stack direction="row" spacing={2}>
-          {chipData.map((data, index) => {
-            return (
-              <ListItem key={index}>
-                <Chip
-                  icon={data.icon}
-                  label={data.label}
-                  style={styles.chip}
-                  onClick={() => onValueChange("type", data.label)}
-                  color={data.label === type  ? 'primary' : undefined}
-                />
-              </ListItem>
-            );
-          })}
-          </Stack>
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          indicatorColor="secondary"
+          textColor="inherit"
+          variant="fullWidth"
+          aria-label="full width tabs example"
+        >
+          <Tab label={SPLIT_METHOD.EQUALLY} {...a11yProps(0)} />
+          <Tab label={SPLIT_METHOD.UNEQUALLY} {...a11yProps(1)} />
+          <Tab label={SPLIT_METHOD.BY_PERCENTAGE} {...a11yProps(2)} />
+        </Tabs>
+      <SwipeableViews
+        axis={'x-reverse'}
+        index={value}
+        onChangeIndex={handleChangeIndex}
+      >
+        <TabPanel value={value} index={0} >
+          <EqualSplit/>
+        </TabPanel>
+        <TabPanel value={value} index={1} >
+          <UnEqualSplit/>
+        </TabPanel>
+        <TabPanel value={value} index={2} >
+          <PercentageSplit/>
+        </TabPanel>
+      </SwipeableViews>
         </Box>
       </Dialog>
     </React.Fragment>
   );
 }
 
+interface TabPanelProps {
+  children?: React.ReactNode;
+  dir?: string;
+  index: number;
+  value: number;
+}
+
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`full-width-tabpanel-${index}`}
+      aria-labelledby={`full-width-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+function a11yProps(index: number) {
+  return {
+    id: `full-width-tab-${index}`,
+    'aria-controls': `full-width-tabpanel-${index}`,
+  };
+}
+
 const styles = {
   form: {
     display: 'grid',
-    justifyContent: 'center',
     padding: '3rem'
   },
 

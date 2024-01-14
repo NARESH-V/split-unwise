@@ -29,3 +29,11 @@ export interface GroupType {
     label: string;
     icon: React.JSX.Element;
 }
+
+export interface CreateGroupRequest {
+    group_name: string;
+    user_id_list?: number[]
+    group_type: string;
+    user_id: number;
+    description?: string;
+}

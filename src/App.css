@@ -65,3 +65,11 @@
 .active {
   color: #1172ce;
 }
+
+.autocomplete div::before {
+  border-bottom: unset !important;
+}
+
+.autocomplete div div {
+  display: none !important;
+}
