@@ -8,7 +8,7 @@ export interface Friend {
 
 export interface Group {
     name: string;
-    groupId: number;
+    groupId?: number;
     description?: string;
 }
 

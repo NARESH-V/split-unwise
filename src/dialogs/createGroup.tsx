@@ -14,17 +14,19 @@ import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import Chip from '@mui/material/Chip';
-import { GROUP_TYPES } from '../common/constants.tsx';
+import { GROUPS, GROUP_TYPES } from '../common/constants.tsx';
 import { GroupService } from '../services/groupService.ts';
-import { response } from 'express';
 import { CreateGroupRequest } from '../common/models.ts';
+import { connect, useDispatch } from 'react-redux';
+import { addGroup, removeGroup, setGroupList } from '../store/actions/groupActions.ts';
 
 const Transition = React.forwardRef(function Transition(props: SlideProps, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function CreateGroup({open, handleClose}) {
+const CreateGroup = ({open, handleClose}) => {
   const groupService = new GroupService();
+  const dispatch = useDispatch();
 
   const [groupName, setGroupName] = React.useState<string | null>(null);
   const [type, setType] = React.useState<string>('default');
@@ -54,9 +56,11 @@ export default function CreateGroup({open, handleClose}) {
     }
     groupService.createGroup(payload).then(response => {
       if(response?.status !== 202) {
-        console.log(response);
         return;
       }
+    }).catch((error: any) => {
+      console.log(error);
+      dispatch(setGroupList(GROUPS));
     })
 
     handleClose();
@@ -160,3 +164,15 @@ const styles = {
     padding: '5px'
   }
 }
+
+const mapStateToProps = (state) => ({
+  groups: state.groups.groups,
+});
+
+const mapDispatchToProps = {
+  addGroup,
+  removeGroup,
+  setGroupList,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreateGroup);

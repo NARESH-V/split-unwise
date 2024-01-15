@@ -1,7 +1,4 @@
-import { response } from "express";
 import { Group } from "../common/models";
-import axios from "axios";
-import { BASE_URL } from "../common/constants.tsx";
 import { HttpWrapper } from "./httpWrapper.ts";
 
 export class GroupService extends HttpWrapper {
@@ -11,14 +8,13 @@ export class GroupService extends HttpWrapper {
      * @returns list of groups
      */
     public getGroupList(userId?: number): Group[]  {
-        let groups: Group[] = [];
+        let groups: Group[] = [{groupId: 1111, name: 'test', description: 'test'}];
 
         this.http.GET(`${this.baseApiRoot}/group/get/2`)
         .then((response) => {
             groups = response.data;
             return groups;
-        }).catch((error: any) => console.log(error));
-        
+        }).catch((error: any) => console.log(error));     
         return groups;
     }
 

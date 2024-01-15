@@ -4,14 +4,19 @@ import GroupListItem from '../components/groupListItem.tsx';
 import { GROUPS } from '../common/constants.tsx';
 import { GroupService } from '../services/groupService.ts';
 import { Group } from '../common/models.ts';
+import { connect, useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../store/store.ts';
+import { addGroup, removeGroup, setGroupList } from '../store/actions/groupActions.ts';
 
 
 const Groups = () => {
   const groupService = new GroupService();
-  const [groupData, setGroupData] = useState<Group[] | null>([]);
+  const dispatch = useDispatch();
+  const groupData = useSelector((state: RootState) => state.groups.groups);
+  // const [groupData, setGroupData] = useState<Group[] | null>([]);
 
   useEffect( () => {
-      setGroupData(groupService.getGroupList());
+      dispatch(setGroupList(groupService.getGroupList()));
   },[])
 
   return(
@@ -29,4 +34,14 @@ const groupListStyle: React.CSSProperties = {
   paddingTop: '10px'
 }
 
-export default Groups;
+const mapStateToProps = (state) => ({
+  groups: state.groups.groups,
+});
+
+const mapDispatchToProps = {
+  addGroup,
+  removeGroup,
+  setGroupList
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Groups);
