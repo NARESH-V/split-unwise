@@ -1,8 +1,10 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import groupReducer from "./reducers/groupReducer.ts";
+import userReducer from './reducers/userReducers.ts';
 
 const rootReducer = combineReducers({
-    groups: groupReducer
+    groups: groupReducer,
+    user: userReducer
   });
 
 const store = configureStore({

@@ -7,20 +7,34 @@ import Groups from './pages/groups.tsx';
 import Activity from './pages/activity.tsx';
 import NavBar from './components/navBar.tsx';
 import MenuBar from './components/menuBar.tsx';
+import Profile from './pages/profile.tsx';
+import Login from './pages/login.tsx';
+import { useSelector } from 'react-redux';
 
 function App() {
+
+  const currentUser = useSelector((state) => state.user.currentUser);
+  
   return (
     <div className="App">
       <Router>
-        <MenuBar/>
-        <div className="displayContainer">
-          <Routes >
-            <Route exact path="/" element={<Groups/>} />
-            <Route path="/groupExpense" element={<GroupExpense/>} />
-            <Route path="/activity" element={<Activity/>} />
-          </Routes>
-        </div>
-        <NavBar/>
+        {currentUser ? (
+          <>
+            <MenuBar/>
+            <div className="displayContainer">
+              <Routes >
+                <Route exact path="/" element={<Groups/>} />
+                <Route path="/groupExpense" element={<GroupExpense/>} />
+                <Route path="/activity" element={<Activity/>} />
+                <Route path="/profile" element={<Profile/>} />
+                <Route path="/login" element={<Login/>} />
+              </Routes>
+            </div>
+            <NavBar/>
+          </>
+        ) : (
+          <Login/>
+        )}
       </Router>
     </div>
   );

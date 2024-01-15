@@ -37,3 +37,14 @@ export interface CreateGroupRequest {
     user_id: number;
     description?: string;
 }
+
+export interface User {
+    name: string;
+    email: string;
+    picture?: any;
+    id?: string;
+}
+
+export interface OAuthUser {
+    access_token: string;
+}

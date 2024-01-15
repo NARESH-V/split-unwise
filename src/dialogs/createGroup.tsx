@@ -49,7 +49,7 @@ const CreateGroup = ({open, handleClose}) => {
 
     const payload: CreateGroupRequest = {
       group_name: groupName,
-      user_id_list: [1,2,3],
+      user_id_list: [],
       group_type: type,
       user_id: 2,
       description: groupName
