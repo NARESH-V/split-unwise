@@ -46,9 +46,9 @@
   width: 330px !important;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 740px) {
   .groupCard {
-    width: 450px !important;
+    width: 310px !important;
   }
 }
 
@@ -58,7 +58,7 @@
 
 @media (max-width: 500px) {
   .groupList {
-    justify-content: unset;
+    justify-content: center;
   }
 }
 

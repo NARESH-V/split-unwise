@@ -10,6 +10,7 @@ import MenuBar from './components/menuBar.tsx';
 import Profile from './pages/profile.tsx';
 import Login from './pages/login.tsx';
 import { useSelector } from 'react-redux';
+import UserRegistration from './pages/register.tsx';
 
 function App() {
 

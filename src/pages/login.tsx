@@ -6,13 +6,15 @@ import { setCurrentUser } from '../store/actions/userActions.ts';
 import { useNavigate } from 'react-router';
 import Button from '@mui/material/Button';
 import GoogleIcon from '@mui/icons-material/Google';
-import { Container } from '@mui/material';
+import { Box } from '@mui/material';
 import { OAuthUser } from '../common/models.ts';
+import UserRegistration from './register.tsx';
 
-const UserRegistration = () => {
+const Login = () => {
     const userService = new UserService();
 
     const [ oAuthUser, setOAuthUser ] = useState<OAuthUser | null>(null);
+    const [openRegister, setOpenRegister] = React.useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -26,8 +28,13 @@ const UserRegistration = () => {
             if (oAuthUser) {
                 userService.getUserDataFromOAuth(oAuthUser)
                     .then((res) => {
+                        if(res.data.name.toLowerCase()==='naresh v'){
                         dispatch(setCurrentUser(res.data));
-                        navigate('/');
+                        navigate('/');}
+                        else{
+                            setOpenRegister(true);
+                            alert('user not registered');
+                        }
                     })
                     .catch((err) => console.log(err));
             }
@@ -35,23 +42,31 @@ const UserRegistration = () => {
         [ oAuthUser ]
     );
 
+    const handleClose = () => {
+        setOpenRegister(false);
+    };
+
   return (
-    <Container style={styles.loginButton}>
-        <Button 
-            variant="outlined" 
-            startIcon={<GoogleIcon />}
-            onClick={() => login()} 
-        >
-            Sign in with Google
-        </Button>
-    </Container>
+    <>
+        <Box style={styles.loginButton}>
+            <Button
+                variant="outlined"
+                startIcon={<GoogleIcon />}
+                onClick={() => login()}
+            >
+                Sign in with Google
+            </Button>
+        </Box>
+        <UserRegistration open={openRegister} handleClose={handleClose} />
+    </>
   );
 };
 
 const styles = {
     loginButton: {
         position: 'absolute',
-        top: '70%'
+        top: '70%',
+        width: '-webkit-fill-available'
     } 
 }
-export default UserRegistration;
+export default Login;

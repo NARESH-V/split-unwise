@@ -3,6 +3,7 @@ import { googleLogout } from '@react-oauth/google';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentUser } from '../store/actions/userActions.ts';
 import { RootState } from '../store/store.ts';
+import { Avatar, Button, Container, Stack, Typography } from '@mui/material';
 
 const Profile = () => {
     const dispatch = useDispatch();
@@ -16,20 +17,44 @@ const Profile = () => {
     return (
         <div>
             {profile ? (
-                <div>
-                    <img src={profile.picture} alt="user" />
-                    <h3>User Logged in</h3>
-                    <p>Name: {profile.name}</p>
-                    <p>Email Address: {profile.email}</p>
-                    <br />
-                    <br />
-                    <button onClick={logOut}>Log out</button>
-                </div>
+                <Container>
+                    <Stack direction="row" spacing={3} style={styles.profileData}>
+                        <Avatar style={styles.profileImage} alt={profile.name} src={profile.picture} />
+                        <div style={styles.profileName}>
+                            <Typography>{profile.name}</Typography>
+                            <Typography>{profile.email}</Typography>
+                        </div>
+                    </Stack>
+                    <Stack direction="row" alignContent="center" justifyContent="center">
+                        <Button variant="text" onClick={logOut}>Log out</Button>
+                    </Stack>
+                </Container>      
             ) : (
                 <div>Error!!!</div>
             )}
         </div>
     );
 };
+
+const styles = {
+    profileData: {
+        display: 'flex',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        alignItems: 'center',
+        padding: '30px 0 30px 0'
+    },
+
+    profileName: {
+        display: 'grid',
+        justifyItems: 'center',
+        margin: '20px 0px'
+    },
+
+    profileImage: {
+        height: '8rem',
+        width: '8rem'
+    }
+}
 
 export default Profile;
