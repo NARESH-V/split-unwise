@@ -99,8 +99,8 @@ export default function AdjustSplit({open, handleClose}) {
           onChange={handleChange}
           indicatorColor="secondary"
           textColor="inherit"
-          variant="fullWidth"
-          aria-label="full width tabs example"
+          variant="scrollable"
+          sx={styles.tabGroup}
         >
           <Tab label={SPLIT_METHOD.EQUALLY} {...a11yProps(0)} />
           <Tab label={SPLIT_METHOD.UNEQUALLY} {...a11yProps(1)} />
@@ -164,7 +164,7 @@ function a11yProps(index: number) {
 const styles = {
   form: {
     display: 'grid',
-    padding: '3rem'
+    padding: '3rem 1rem'
   },
 
   input: {
@@ -185,5 +185,11 @@ const styles = {
 
   chip: {
     padding: '5px'
+  },
+
+  tabGroup: {
+    '& .MuiTabs-flexContainer': {
+      justifyContent: 'space-evenly'
+    }
   }
 }

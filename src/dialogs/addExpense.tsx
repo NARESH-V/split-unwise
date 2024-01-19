@@ -110,13 +110,13 @@ export default function AddExpense(props) {
               options={options}
               groupBy={(option) => option.category}
               getOptionLabel={(option) => option.label}
-              sx={{ width: 300 }}
+              sx={{ width: '35%',  '& .MuiAutocomplete-inputRoot' : {padding: '0px !important'} 
+              }}
               onChange={(e, option) => onValueChange("splitWith", option?.value)} 
               renderInput={(params) => 
                 <TextField 
                   {...params} 
                   placeholder='Enter names, emails, or Phone' 
-                  style={styles.splitWith} 
                   variant='standard'
                   className='autocomplete'/>
               }
@@ -163,11 +163,12 @@ export default function AddExpense(props) {
             />
           </Stack>
           
-          <Stack direction="row" spacing={2}>
-            <Typography>Paid by </Typography>
-            <Typography>you </Typography>
-            <Typography>and split</Typography>
-            <Button onClick={handleClickOpen}>{splitMethod}</Button>
+          <Stack direction="row" spacing={2} style={styles.splitMethodInfo}>
+            <div>Paid by 
+              <Button style={styles.textButton} variant='outlined'>you </Button>
+               and split 
+              <Button style={styles.textButton} onClick={handleClickOpen} variant='outlined'>{splitMethod}</Button>
+            </div>
           </Stack>
         </Box>
       </Dialog>
@@ -202,7 +203,19 @@ const styles = {
   },
 
   splitWith: {
- 
+    '& .MuiAutocomplete-inputRoot' : {
+      padding: '0px !important'
+    }
+  },
+
+  splitMethodInfo:{
+    justifyContent: 'center'
+  },
+
+  textButton: {
+    padding: '0px 5px',
+    margin: '0px 5px',
+    minWidth: 'unset'
   },
 
   textInput: {

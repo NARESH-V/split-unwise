@@ -103,7 +103,7 @@ const CreateGroup = ({open, handleClose}) => {
           autoComplete="off"
           style={styles.form}
         >
-          <Stack direction="row" spacing={2} style={styles.input}>
+          <Stack direction="row" spacing={2} style={styles.textInput}>
             <Avatar variant='rounded' style={styles.groupImage}>
               <AddAPhotoIcon />
             </Avatar>
@@ -115,11 +115,11 @@ const CreateGroup = ({open, handleClose}) => {
               onChange={(e) => onValueChange("name", e.target.value)}
             />
           </Stack>
-          <Typography>Type</Typography>
-          <Stack direction="row" spacing={2}>
+          <Typography style={styles.input}>Type</Typography>
+          <Stack direction="row" spacing={2} style={styles.input}>
           {chipData.map((data, index) => {
             return (
-              <ListItem key={index}>
+              <ListItem key={index} style={{margin: '0px'}}>
                 <Chip
                   icon={data.icon}
                   label={data.label}
@@ -145,9 +145,14 @@ const styles = {
   },
 
   input: {
+    padding: '0px 0px'
+  },
+
+  textInput: {
     display: 'flex',
     justifyContent: 'space-evenly',
-    marginBottom: '20px'
+    marginBottom: '20px',
+    padding: '0px 0px'
   },
 
   groupName: {
@@ -161,7 +166,8 @@ const styles = {
   },
 
   chip: {
-    padding: '5px'
+    padding: '5px',
+    margin: '0px'
   }
 }
 

@@ -7,7 +7,7 @@ interface UserState {
 }
 
 const initialState: UserState = {
-  currentUser: null,
+  currentUser: {},
 };
 
 const userReducer = createReducer(initialState, (builder) => {
