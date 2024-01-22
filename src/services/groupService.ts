@@ -27,4 +27,13 @@ export class GroupService extends HttpWrapper {
     public createGroup(payload) {
         return this.http.POST(`${this.baseApiRoot}/group/create`, payload);
     }
+
+    /**
+     * getGroupExpense
+     * @param groupId 
+     * @returns list of expenses in a group
+     */
+    public getGroupExpense(groupId: number) {
+        return this.http.GET(`${this.baseApiRoot}/group/expense/${groupId}`)
+    }
 }

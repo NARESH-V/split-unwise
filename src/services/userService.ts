@@ -1,3 +1,4 @@
+import { response } from "express";
 import { OAuthUser } from "../common/models.ts";
 import { HttpWrapper } from "./httpWrapper.ts";
 
@@ -16,5 +17,21 @@ export class UserService extends HttpWrapper {
         };
 
         return this.http.GET(url, headers);
+    }
+
+    /**
+     * getUserByEmail
+     * @param email user email Id
+     * @returns user information
+     */
+    public getUserByEmail(email: string) {
+        let userInfo = null;
+
+        this.http.GET(`${this.baseApiRoot}/user/${email}`)
+        .then((response) => {
+            userInfo = response.data;
+            return userInfo;
+        }).catch((error: any) => console.log(error));
+        return userInfo;
     }
 }

@@ -107,7 +107,7 @@ export default function AdjustSplit({open, handleClose}) {
           <Tab label={SPLIT_METHOD.BY_PERCENTAGE} {...a11yProps(2)} />
         </Tabs>
       <SwipeableViews
-        axis={'x-reverse'}
+        axis={'x'}
         index={value}
         onChangeIndex={handleChangeIndex}
       >

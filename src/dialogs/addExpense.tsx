@@ -110,15 +110,14 @@ export default function AddExpense(props) {
               options={options}
               groupBy={(option) => option.category}
               getOptionLabel={(option) => option.label}
-              sx={{ width: '35%',  '& .MuiAutocomplete-inputRoot' : {padding: '0px !important'} 
-              }}
+              className='autocomplete'
               onChange={(e, option) => onValueChange("splitWith", option?.value)} 
               renderInput={(params) => 
                 <TextField 
                   {...params} 
                   placeholder='Enter names, emails, or Phone' 
                   variant='standard'
-                  className='autocomplete'/>
+                  className='autocompleteText'/>
               }
               renderGroup={(params) => (
                 <li key={params.key}>

@@ -66,10 +66,23 @@
   color: #1172ce;
 }
 
-.autocomplete div::before {
+.autocompleteText div::before {
   border-bottom: unset !important;
 }
 
-.autocomplete div div {
+.autocompleteText div div {
   display: none !important;
+}
+
+.autocomplete {
+  width: 20%;
+  .MuiAutocomplete-inputRoot {
+    padding: 0px !important;
+  }
+}
+
+@media (max-width: 500px) {
+  .autocomplete {
+    width: 60%;
+  }
 }

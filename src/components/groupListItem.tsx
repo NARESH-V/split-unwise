@@ -1,10 +1,14 @@
 import React from 'react';
 import Avatar from '@mui/material/Avatar';
 import { Container, ListItem, ListItemAvatar } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { setCurrentGroup } from '../store/actions/groupActions.ts';
+import { useDispatch } from 'react-redux';
 
 const GroupListItem = (props) => {
     const data = props.data;
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const shortName = (name) => {
       return name.toUpperCase()[0];
@@ -14,8 +18,13 @@ const GroupListItem = (props) => {
       return `#${Math.random().toString(16).substr(-6)}`;
     };
 
+    const handleClick = () => {
+      navigate('groupExpense');
+      dispatch(setCurrentGroup(data));
+    }
+
   return(
-    <ListItem style={{width: 'auto'}} component={Link} to={'groupExpense'}>
+    <ListItem style={{width: 'auto'}} onClick={handleClick}>
       <Container style={styles.groupCard} className='groupCard' >
         <ListItemAvatar  style={styles.imageContainer}>
           <Avatar sx={{ bgcolor: generateColor, width: '5rem', height: '5rem' }}>{shortName(data.name)}</Avatar>

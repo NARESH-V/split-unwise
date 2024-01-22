@@ -28,6 +28,8 @@ const Login = () => {
             if (oAuthUser) {
                 userService.getUserDataFromOAuth(oAuthUser)
                     .then((res) => {
+                        const user = userService.getUserByEmail(res.data.email);
+                        // if(user){
                         if(res.data.name.toLowerCase()==='naresh v'){
                         dispatch(setCurrentUser(res.data));
                         navigate('/');}

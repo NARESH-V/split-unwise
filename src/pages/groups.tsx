@@ -4,7 +4,7 @@ import GroupListItem from '../components/groupListItem.tsx';
 import { GroupService } from '../services/groupService.ts';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/store.ts';
-import { setGroupList } from '../store/actions/groupActions.ts';
+import { setCurrentGroup, setGroupList } from '../store/actions/groupActions.ts';
 
 
 const Groups = () => {
@@ -15,6 +15,7 @@ const Groups = () => {
 
   useEffect( () => {
       dispatch(setGroupList(groupService.getGroupList()));
+      dispatch(setCurrentGroup(null));
   },[])
 
   return(
