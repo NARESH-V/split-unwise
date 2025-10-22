@@ -1,7 +1,7 @@
 import React from 'react';
 import Avatar from '@mui/material/Avatar';
 import { Container, ListItem, ListItemAvatar } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { setCurrentGroup } from '../store/actions/groupActions.ts';
 import { useDispatch } from 'react-redux';
 

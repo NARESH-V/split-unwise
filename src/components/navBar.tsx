@@ -25,11 +25,11 @@ const NavBar = () => {
     if(!currentUser) {
       navigate('/login');
     }
-  }, [navigate]);
+  }, [navigate, currentUser]);
 
   const pagePathMap = [
       {page: 'Groups', path: '/', icon: <GroupIcon/> }, 
-      {page: 'GroupExpense', path: 'groupExpense', icon: <PaymentsIcon/> },
+      // {page: 'GroupExpense', path: 'groupExpense', icon: <PaymentsIcon/> },
       {page: 'Activity', path: '/activity', icon: <TimelineIcon/> }, 
       {page: 'Profile', path: '/profile', icon: <AccountCircleIcon/>}
   ];

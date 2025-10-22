@@ -40,7 +40,7 @@ const styles = {
     profileData: {
         display: 'flex',
         justifyContent: 'center',
-        flexDirection: 'column',
+        flexDirection: 'column' as 'column',
         alignItems: 'center',
         padding: '30px 0 30px 0'
     },

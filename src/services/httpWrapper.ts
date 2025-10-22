@@ -1,4 +1,4 @@
-import axios, { Axios, AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { BASE_URL } from "../common/constants.tsx";
 
 export class HttpWrapper {

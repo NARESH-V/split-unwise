@@ -1,6 +1,6 @@
-import { response } from "express";
-import { OAuthUser } from "../common/models.ts";
+import { OAuthUser, User } from "../common/models.ts";
 import { HttpWrapper } from "./httpWrapper.ts";
+import localStorageDB from "./localStorageDB.ts";
 
 export class UserService extends HttpWrapper {
 
@@ -24,14 +24,30 @@ export class UserService extends HttpWrapper {
      * @param email user email Id
      * @returns user information
      */
-    public getUserByEmail(email: string) {
-        let userInfo = null;
+    public async getUserByEmail(email: string): Promise<User | null> {
+        try {
+            // Use local storage DB
+            const user = localStorageDB.getUserByEmail(email);
+            return user;
+        } catch (error: any) {
+            console.error('Error fetching user:', error);
+            return null;
+        }
+    }
 
-        this.http.GET(`${this.baseApiRoot}/user/${email}`)
-        .then((response) => {
-            userInfo = response.data;
-            return userInfo;
-        }).catch((error: any) => console.log(error));
-        return userInfo;
+    /**
+     * registerUser
+     * @param userData user data to register
+     * @returns registration response
+     */
+    public async registerUser(userData: User): Promise<User> {
+        try {
+            // Save to local storage DB
+            const newUser = localStorageDB.addUser(userData);
+            return newUser;
+        } catch (error: any) {
+            console.error('Error registering user:', error);
+            throw error;
+        }
     }
 }

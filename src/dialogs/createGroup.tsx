@@ -14,11 +14,13 @@ import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import Chip from '@mui/material/Chip';
-import { GROUPS, GROUP_TYPES } from '../common/constants.tsx';
+import { GROUP_TYPES } from '../common/constants.tsx';
 import { GroupService } from '../services/groupService.ts';
-import { CreateGroupRequest } from '../common/models.ts';
-import { connect, useDispatch } from 'react-redux';
-import { addGroup, removeGroup, setGroupList } from '../store/actions/groupActions.ts';
+import { CreateGroupRequest, GroupMember } from '../common/models.ts';
+import { useDispatch, useSelector } from 'react-redux';
+import { addGroup } from '../store/actions/groupActions.ts';
+import PersonIcon from '@mui/icons-material/Person';
+import AddIcon from '@mui/icons-material/Add';
 
 const Transition = React.forwardRef(function Transition(props: SlideProps, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -27,9 +29,14 @@ const Transition = React.forwardRef(function Transition(props: SlideProps, ref) 
 const CreateGroup = ({open, handleClose}) => {
   const groupService = new GroupService();
   const dispatch = useDispatch();
+  const currentUser = useSelector((state: any) => state.user.currentUser);
 
   const [groupName, setGroupName] = React.useState<string | null>(null);
-  const [type, setType] = React.useState<string>('default');
+  const [type, setType] = React.useState<string>('Trip');
+  const [loading, setLoading] = React.useState(false);
+  const [members, setMembers] = React.useState<GroupMember[]>([]);
+  const [memberName, setMemberName] = React.useState('');
+  const [memberEmail, setMemberEmail] = React.useState('');
 
   const chipData = GROUP_TYPES;
 
@@ -41,31 +48,85 @@ const CreateGroup = ({open, handleClose}) => {
     }
   };
 
-  const createGroup = () => {
-    if(!groupName || groupName.length < 0) {
-      alert("please enter group name."); 
+  const addMember = () => {
+    if (!memberName || !memberEmail) {
+      alert('Please enter both name and email');
       return;
-    } 
+    }
+
+    // Check if email already exists
+    if (members.some(m => m.email === memberEmail)) {
+      alert('Member already added');
+      return;
+    }
+
+    const newMember: GroupMember = {
+      userId: Date.now(), // Temporary ID
+      userName: memberName,
+      email: memberEmail,
+      role: 'member'
+    };
+
+    setMembers([...members, newMember]);
+    setMemberName('');
+    setMemberEmail('');
+  };
+
+  const removeMember = (userId: number) => {
+    setMembers(members.filter(m => m.userId !== userId));
+  };
+
+  const createGroup = async () => {
+    if(!groupName || groupName.length === 0) {
+      alert("Please enter group name."); 
+      return;
+    }
+
+    if (!currentUser?.id) {
+      alert("User not logged in");
+      return;
+    }
+
+    setLoading(true);
+
+    // Add current user as admin
+    const groupMembers: GroupMember[] = [
+      {
+        userId: parseInt(currentUser.id),
+        userName: currentUser.name,
+        email: currentUser.email,
+        role: 'admin'
+      },
+      ...members
+    ];
 
     const payload: CreateGroupRequest = {
       group_name: groupName,
-      user_id_list: [],
+      user_id_list: members.map(m => m.userId),
       group_type: type,
-      user_id: 2,
+      user_id: parseInt(currentUser.id),
       description: groupName
     }
-    groupService.createGroup(payload).then(response => {
-      if(response?.status !== 202) {
-        return;
-      }
-    }).catch((error: any) => {
-      console.log(error);
-      dispatch(setGroupList(GROUPS));
-    })
 
-    handleClose();
-    setGroupName(null);
-    setType('default');
+    try {
+      const response = await groupService.createGroup(payload, groupMembers);
+      
+      // Add the new group to the list
+      dispatch(addGroup(response));
+      
+      // Reset form and close
+      handleClose();
+      setGroupName(null);
+      setType('Trip');
+      setMembers([]);
+      setMemberName('');
+      setMemberEmail('');
+    } catch (error: any) {
+      console.error('Error creating group:', error);
+      alert('Failed to create group. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -89,8 +150,8 @@ const CreateGroup = ({open, handleClose}) => {
             <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
               Create Group
             </Typography>
-            <Button autoFocus color="inherit" onClick={createGroup}>
-              done
+            <Button autoFocus color="inherit" onClick={createGroup} disabled={loading}>
+              {loading ? 'Creating...' : 'done'}
             </Button>
           </Toolbar>
         </AppBar>
@@ -131,6 +192,52 @@ const CreateGroup = ({open, handleClose}) => {
             );
           })}
           </Stack>
+
+          {/* Members Section */}
+          <Typography style={{...styles.input, marginTop: '20px'}}>Add Members</Typography>
+          <Stack direction="row" spacing={1} style={{...styles.input, alignItems: 'center'}}>
+            <TextField
+              label="Name"
+              variant="outlined"
+              size="small"
+              value={memberName}
+              onChange={(e) => setMemberName(e.target.value)}
+              style={{width: '150px'}}
+            />
+            <TextField
+              label="Email"
+              variant="outlined"
+              size="small"
+              type="email"
+              value={memberEmail}
+              onChange={(e) => setMemberEmail(e.target.value)}
+              style={{width: '200px'}}
+            />
+            <IconButton color="primary" onClick={addMember}>
+              <AddIcon />
+            </IconButton>
+          </Stack>
+
+          {/* Display added members */}
+          {members.length > 0 && (
+            <>
+              <Typography style={{...styles.input, marginTop: '10px', fontSize: '0.9em'}}>
+                Members ({members.length})
+              </Typography>
+              <Stack direction="row" spacing={1} style={{...styles.input, flexWrap: 'wrap', gap: '8px'}}>
+                {members.map((member) => (
+                  <Chip
+                    key={member.userId}
+                    icon={<PersonIcon />}
+                    label={`${member.userName} (${member.email})`}
+                    onDelete={() => removeMember(member.userId)}
+                    color="primary"
+                    variant="outlined"
+                  />
+                ))}
+              </Stack>
+            </>
+          )}
         </Box>
       </Dialog>
     </React.Fragment>
@@ -171,14 +278,4 @@ const styles = {
   }
 }
 
-const mapStateToProps = (state) => ({
-  groups: state.groups.groups,
-});
-
-const mapDispatchToProps = {
-  addGroup,
-  removeGroup,
-  setGroupList,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(CreateGroup);
+export default CreateGroup;

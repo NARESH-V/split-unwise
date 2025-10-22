@@ -27,21 +27,39 @@ const Login = () => {
         () => {
             if (oAuthUser) {
                 userService.getUserDataFromOAuth(oAuthUser)
-                    .then((res) => {
-                        const user = userService.getUserByEmail(res.data.email);
-                        // if(user){
-                        if(res.data.name.toLowerCase()==='naresh v'){
-                        dispatch(setCurrentUser(res.data));
-                        navigate('/');}
-                        else{
-                            setOpenRegister(true);
-                            alert('user not registered');
+                    .then(async (res) => {
+                        const userData = res.data;
+                        
+                        // Check if user exists in local storage
+                        let user = await userService.getUserByEmail(userData.email);
+                        
+                        // If user doesn't exist, auto-register them
+                        if (!user) {
+                            user = await userService.registerUser({
+                                name: userData.name,
+                                email: userData.email,
+                                picture: userData.picture,
+                                id: String(Date.now())
+                            });
                         }
+                        
+                        // Update with Google user data
+                        const currentUser = {
+                            ...user,
+                            picture: userData.picture
+                        };
+                        
+                        dispatch(setCurrentUser(currentUser));
+                        navigate('/');
                     })
-                    .catch((err) => console.log(err));
+                    .catch((err) => {
+                        console.error('Login error:', err);
+                        alert('Failed to login. Please try again.');
+                    });
             }
         },
-        [ oAuthUser ]
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [ oAuthUser, dispatch, navigate ]
     );
 
     const handleClose = () => {
@@ -66,7 +84,7 @@ const Login = () => {
 
 const styles = {
     loginButton: {
-        position: 'absolute',
+        position: 'absolute' as 'absolute',
         top: '70%',
         width: '-webkit-fill-available'
     } 

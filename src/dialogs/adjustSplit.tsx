@@ -1,7 +1,6 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import ListItem from '@mui/material/ListItem';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
@@ -9,12 +8,7 @@ import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
 import Slide, { SlideProps } from '@mui/material/Slide';
 import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import Avatar from '@mui/material/Avatar';
-import Stack from '@mui/material/Stack';
-import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
-import Chip from '@mui/material/Chip';
-import { GROUP_TYPES, SPLIT_METHOD } from '../common/constants.tsx';
+import { SPLIT_METHOD } from '../common/constants.tsx';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import SwipeableViews from 'react-swipeable-views';
@@ -26,37 +20,119 @@ const Transition = React.forwardRef(function Transition(props: SlideProps, ref) 
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function AdjustSplit({open, handleClose}) {
-  const [groupName, setGroupName] = React.useState<string | null>(null);
-  const [type, setType] = React.useState<string | null>(null);
+interface AdjustSplitProps {
+  open: boolean;
+  handleClose: () => void;
+  amount?: number;
+  participants?: Array<{ userId: number; userName: string; email: string }>;
+  splitMethod?: string;
+  onSplitMethodChange?: (method: string) => void;
+  onSplitUpdate?: (splitDetails: any, participants?: any[]) => void;
+}
+
+export default function AdjustSplit({
+  open, 
+  handleClose, 
+  amount = 0, 
+  participants = [],
+  splitMethod = SPLIT_METHOD.EQUALLY,
+  onSplitMethodChange,
+  onSplitUpdate
+}: AdjustSplitProps) {
   const [value, setValue] = React.useState(0);
+  const [currentSplitDetails, setCurrentSplitDetails] = React.useState<any>(null);
+  const [selectedParticipants, setSelectedParticipants] = React.useState<any[]>(participants);
+
+  // Debug log when amount changes
+  React.useEffect(() => {
+    console.log('AdjustSplit received amount:', amount);
+  }, [amount]);
+
+  // Set initial tab based on split method
+  React.useEffect(() => {
+    if (splitMethod === SPLIT_METHOD.EQUALLY) {
+      setValue(0);
+    } else if (splitMethod === SPLIT_METHOD.UNEQUALLY) {
+      setValue(1);
+    } else if (splitMethod === SPLIT_METHOD.BY_PERCENTAGE) {
+      setValue(2);
+    }
+  }, [splitMethod, open]);
+
+  // Sync selected participants with participants prop
+  React.useEffect(() => {
+    setSelectedParticipants(participants);
+  }, [participants]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
+    
+    // Update split method when tab changes
+    if (onSplitMethodChange) {
+      if (newValue === 0) {
+        onSplitMethodChange(SPLIT_METHOD.EQUALLY);
+      } else if (newValue === 1) {
+        onSplitMethodChange(SPLIT_METHOD.UNEQUALLY);
+      } else if (newValue === 2) {
+        onSplitMethodChange(SPLIT_METHOD.BY_PERCENTAGE);
+      }
+    }
   };
 
   const handleChangeIndex = (index: number) => {
     setValue(index);
-  };
-
-  const onValueChange = (field: string, value: string) => {
-    switch(field.toLowerCase()) {
-      case 'name': setGroupName(value); break;
-      case 'type': setType(value); break;
-      default: break;
+    
+    // Update split method when swipe changes tab
+    if (onSplitMethodChange) {
+      if (index === 0) {
+        onSplitMethodChange(SPLIT_METHOD.EQUALLY);
+      } else if (index === 1) {
+        onSplitMethodChange(SPLIT_METHOD.UNEQUALLY);
+      } else if (index === 2) {
+        onSplitMethodChange(SPLIT_METHOD.BY_PERCENTAGE);
+      }
     }
   };
 
-  const createGroup = () => {
-    if(!groupName || groupName.length < 0) {
-      alert("please enter group name."); 
-      return;
-    } 
-    alert(`group name : ${groupName}, type :${type}`);
+  const handleSplitDetailsChange = (splitDetails: any) => {
+    setCurrentSplitDetails(splitDetails);
+  };
 
+  const handleParticipantSelectionChange = (newParticipants: any[]) => {
+    setSelectedParticipants(newParticipants);
+  };
+
+  const handleDone = () => {
+    // Save split configuration
+    if (onSplitUpdate) {
+      if (currentSplitDetails && currentSplitDetails.length > 0) {
+        // Use custom split details with participant info
+        const detailsWithNames = currentSplitDetails.map((split: any) => {
+          const participant = selectedParticipants.find(p => p.userId === split.userId);
+          return {
+            ...split,
+            userName: split.userName || participant?.userName || '',
+            amount: Number(split.amount) || 0
+          };
+        });
+        console.log('Saving custom split details:', detailsWithNames);
+        onSplitUpdate(detailsWithNames, selectedParticipants);
+      } else if (value === 0) {
+        // For equal split, calculate and send the details
+        const splitAmount = selectedParticipants.length > 0 ? Number((amount / selectedParticipants.length).toFixed(2)) : 0;
+        const equalSplitDetails = selectedParticipants.map(p => ({
+          userId: p.userId,
+          userName: p.userName || '',
+          amount: splitAmount
+        }));
+        console.log('Saving equal split details:', equalSplitDetails, 'Total amount:', amount);
+        onSplitUpdate(equalSplitDetails, selectedParticipants);
+      } else {
+        // Just update participants
+        onSplitUpdate(null, selectedParticipants);
+      }
+    }
     handleClose();
-    setGroupName(null);
-    setType(null);
   }
 
   return (
@@ -80,7 +156,7 @@ export default function AdjustSplit({open, handleClose}) {
             <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
               Adjust Split
             </Typography>
-            <Button autoFocus color="inherit" onClick={createGroup}>
+            <Button autoFocus color="inherit" onClick={handleDone}>
               done
             </Button>
           </Toolbar>
@@ -112,13 +188,18 @@ export default function AdjustSplit({open, handleClose}) {
         onChangeIndex={handleChangeIndex}
       >
         <TabPanel value={value} index={0} >
-          <EqualSplit/>
+          <EqualSplit 
+            amount={amount} 
+            participants={selectedParticipants}
+            allParticipants={participants}
+            onParticipantChange={handleParticipantSelectionChange}
+          />
         </TabPanel>
         <TabPanel value={value} index={1} >
-          <UnEqualSplit/>
+          <UnEqualSplit amount={amount} participants={selectedParticipants} onSplitChange={handleSplitDetailsChange}/>
         </TabPanel>
         <TabPanel value={value} index={2} >
-          <PercentageSplit/>
+          <PercentageSplit amount={amount} participants={selectedParticipants} onSplitChange={handleSplitDetailsChange}/>
         </TabPanel>
       </SwipeableViews>
         </Box>
